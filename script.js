@@ -474,18 +474,61 @@ function actualizarCarrito() {
     carrito.forEach(item => {
         const itemElement = document.createElement('div');
         itemElement.className = 'item-carrito';
-        itemElement.innerHTML = `
-            <img src="${item.ruta}" alt="Sticker ${item.numero}" class="item-carrito-imagen">
-            <div class="item-carrito-info">
-                <div class="item-carrito-numero">Sticker #${item.numero}</div>
-                <div class="item-carrito-cantidad">
-                    <button class="boton-cantidad" onclick="cambiarCantidad(${item.numero}, -1)">-</button>
-                    <span class="cantidad-valor">${item.cantidad}</span>
-                    <button class="boton-cantidad" onclick="cambiarCantidad(${item.numero}, 1)">+</button>
-                </div>
-            </div>
-            <button class="boton-eliminar-item" onclick="eliminarDelCarrito(${item.numero})">🗑️</button>
-        `;
+        
+        const img = document.createElement('img');
+        img.src = item.ruta;
+        img.alt = `Sticker ${item.numero}`;
+        img.className = 'item-carrito-imagen';
+        
+        const info = document.createElement('div');
+        info.className = 'item-carrito-info';
+        
+        const numero = document.createElement('div');
+        numero.className = 'item-carrito-numero';
+        numero.textContent = `Sticker #${item.numero}`;
+        
+        const cantidadContainer = document.createElement('div');
+        cantidadContainer.className = 'item-carrito-cantidad';
+        
+        const botonMenos = document.createElement('button');
+        botonMenos.className = 'boton-cantidad';
+        botonMenos.textContent = '-';
+        botonMenos.addEventListener('click', (e) => {
+            e.stopPropagation();
+            cambiarCantidad(item.numero, -1);
+        });
+        
+        const cantidadValor = document.createElement('span');
+        cantidadValor.className = 'cantidad-valor';
+        cantidadValor.textContent = item.cantidad;
+        
+        const botonMas = document.createElement('button');
+        botonMas.className = 'boton-cantidad';
+        botonMas.textContent = '+';
+        botonMas.addEventListener('click', (e) => {
+            e.stopPropagation();
+            cambiarCantidad(item.numero, 1);
+        });
+        
+        const botonEliminar = document.createElement('button');
+        botonEliminar.className = 'boton-eliminar-item';
+        botonEliminar.textContent = '🗑️';
+        botonEliminar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            eliminarDelCarrito(item.numero);
+        });
+        
+        cantidadContainer.appendChild(botonMenos);
+        cantidadContainer.appendChild(cantidadValor);
+        cantidadContainer.appendChild(botonMas);
+        
+        info.appendChild(numero);
+        info.appendChild(cantidadContainer);
+        
+        itemElement.appendChild(img);
+        itemElement.appendChild(info);
+        itemElement.appendChild(botonEliminar);
+        
         contenidoCarrito.appendChild(itemElement);
     });
 }
