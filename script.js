@@ -104,7 +104,44 @@ function ampliarSticker(sticker) {
         flex-direction: column;
         align-items: center;
         gap: 1rem;
+        position: relative;
     `;
+    
+    // Contenedor de imagen con marca de agua
+    const contenedorImagen = document.createElement('div');
+    contenedorImagen.style.cssText = `
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+    
+    // Múltiples marcas de agua
+    const posicionesMarcas = [
+        { top: '5%', left: '70%' },
+        { top: '20%', left: '75%' },
+        { top: '35%', left: '80%' }
+    ];
+    
+    posicionesMarcas.forEach((posicion, index) => {
+        const marcaAgua = document.createElement('div');
+        marcaAgua.textContent = 'Papelería de Sol • Papelería de Sol • Papelería de Sol';
+        marcaAgua.style.cssText = `
+            position: absolute;
+            top: ${posicion.top};
+            left: ${posicion.left};
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: rgba(152, 183, 255, 0.2);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 2;
+            user-select: none;
+            width: 200%;
+        `;
+        contenedorImagen.appendChild(marcaAgua);
+    });
     
     const imagen = document.createElement('img');
     imagen.src = sticker.ruta;
@@ -113,6 +150,10 @@ function ampliarSticker(sticker) {
         max-width: 100%;
         max-height: 70vh;
         object-fit: contain;
+        user-select: none;
+        -webkit-user-drag: none;
+        -webkit-touch-callout: none;
+        pointer-events: none;
     `;
     
     const texto = document.createElement('h2');
@@ -120,11 +161,33 @@ function ampliarSticker(sticker) {
     texto.style.cssText = `
         color: #98b7ff;
         margin: 0;
+        user-select: none;
     `;
     
+    contenedorImagen.appendChild(imagen);
     contenedor.appendChild(texto);
-    contenedor.appendChild(imagen);
+    contenedor.appendChild(contenedorImagen);
     modal.appendChild(contenedor);
+    
+    // Protección contra clic derecho en el modal
+    modal.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Protección contra arrastrar
+    modal.addEventListener('dragstart', (e) => {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Protección contra selección
+    modal.addEventListener('selectstart', (e) => {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            return false;
+        }
+    });
     
     modal.addEventListener('click', () => {
         modal.remove();
@@ -273,11 +336,37 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// Protección de imágenes
+function aplicarProteccionImagenes() {
+    // Deshabilitar clic derecho en toda la galería
+    galeriaStickers.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Deshabilitar arrastrar imágenes
+    galeriaStickers.addEventListener('dragstart', (e) => {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // Deshabilitar selección de imágenes
+    galeriaStickers.addEventListener('selectstart', (e) => {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            return false;
+        }
+    });
+}
+
 // Inicialización
 function inicializar() {
     console.log('Inicializando catálogo de stickers...');
     generarListaStickers();
     renderizarStickers();
+    aplicarProteccionImagenes();
     console.log(`Catálogo cargado con ${configuracion.totalStickers} stickers`);
 }
 

@@ -150,12 +150,49 @@ body {
     align-items: center;
     justify-content: center;
     margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
 }
 
 .imagen-sticker {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    pointer-events: none;
+}
+
+/* Marcas de agua CSS - múltiples */
+.contenedor-imagen::before {
+    content: 'Papelería de Sol • Papelería de Sol • Papelería de Sol';
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: rgba(152, 183, 255, 0.15);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+    width: 200%;
+}
+
+.contenedor-imagen::after {
+    content: 'Papelería de Sol • Papelería de Sol • Papelería de Sol';
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: rgba(152, 183, 255, 0.15);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+    width: 200%;
 }
 
 .numero-sticker {
@@ -321,6 +358,18 @@ body {
 /* Clases de utilidad */
 .oculto {
     display: none !important;
+}
+
+/* Protección de imágenes */
+.galeria-stickers {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.tarjeta-sticker {
+    -webkit-touch-callout: none;
 }
 
 /* Media queries para móviles */
