@@ -2,8 +2,12 @@
 const configuracion = {
     totalStickers: 1000,
     stickersPorPagina: 98,
-    rutaCarpetaStickers: './stickers/'
+    rutaCarpetaStickers: './stickers/',
+    numeroWhatsApp: '541164879422'
 };
+
+// Carrito de compras
+let carrito = [];
 
 // Variables globales
 let paginaActual = 1;
@@ -21,6 +25,16 @@ const botonBuscar = document.getElementById('boton-buscar');
 const botonResetear = document.getElementById('boton-resetear');
 const inputPagina = document.getElementById('input-pagina');
 const botonIrPagina = document.getElementById('boton-ir-pagina');
+
+// Elementos del carrito
+const botonCarrito = document.getElementById('boton-carrito');
+const panelCarrito = document.getElementById('panel-carrito');
+const cerrarCarrito = document.getElementById('cerrar-carrito');
+const contadorCarrito = document.getElementById('contador-carrito');
+const contenidoCarrito = document.getElementById('contenido-carrito');
+const totalItems = document.getElementById('total-items');
+const botonEnviarPedido = document.getElementById('boton-enviar-pedido');
+const botonVaciarCarrito = document.getElementById('boton-vaciar-carrito');
 
 // Función para generar el array de todos los stickers
 function generarListaStickers() {
@@ -58,13 +72,24 @@ function crearTarjetaSticker(sticker) {
     numeroSticker.className = 'numero-sticker';
     numeroSticker.textContent = `#${sticker.numero}`;
     
+    const botonAgregar = document.createElement('button');
+    botonAgregar.className = 'boton-agregar-carrito';
+    botonAgregar.textContent = 'Agregar al carrito';
+    botonAgregar.onclick = (e) => {
+        e.stopPropagation();
+        agregarAlCarrito(sticker);
+    };
+    
     contenedorImagen.appendChild(imagen);
     tarjeta.appendChild(contenedorImagen);
     tarjeta.appendChild(numeroSticker);
+    tarjeta.appendChild(botonAgregar);
     
     // Evento click para ampliar (opcional)
-    tarjeta.addEventListener('click', () => {
-        ampliarSticker(sticker);
+    tarjeta.addEventListener('click', (e) => {
+        if (e.target !== botonAgregar) {
+            ampliarSticker(sticker);
+        }
     });
     
     return tarjeta;
@@ -370,9 +395,175 @@ function inicializar() {
     console.log(`Catálogo cargado con ${configuracion.totalStickers} stickers`);
 }
 
+// ===== FUNCIONES DEL CARRITO =====
+
+// Cargar carrito desde localStorage
+function cargarCarrito() {
+    const carritoGuardado = localStorage.getItem('carritoStickers');
+    if (carritoGuardado) {
+        carrito = JSON.parse(carritoGuardado);
+        actualizarCarrito();
+    }
+}
+
+// Guardar carrito en localStorage
+function guardarCarrito() {
+    localStorage.setItem('carritoStickers', JSON.stringify(carrito));
+}
+
+// Agregar sticker al carrito
+function agregarAlCarrito(sticker) {
+    const existe = carrito.find(item => item.numero === sticker.numero);
+    
+    if (existe) {
+        existe.cantidad++;
+    } else {
+        carrito.push({ ...sticker, cantidad: 1 });
+    }
+    
+    guardarCarrito();
+    actualizarCarrito();
+    mostrarNotificacion(`Sticker #${sticker.numero} agregado al carrito`);
+}
+
+// Eliminar sticker del carrito
+function eliminarDelCarrito(numero) {
+    carrito = carrito.filter(item => item.numero !== numero);
+    guardarCarrito();
+    actualizarCarrito();
+}
+
+// Cambiar cantidad de un item
+function cambiarCantidad(numero, cambio) {
+    const item = carrito.find(item => item.numero === numero);
+    if (item) {
+        item.cantidad += cambio;
+        if (item.cantidad <= 0) {
+            eliminarDelCarrito(numero);
+        } else {
+            guardarCarrito();
+            actualizarCarrito();
+        }
+    }
+}
+
+// Vaciar carrito
+function vaciarCarrito() {
+    if (carrito.length === 0) return;
+    
+    if (confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
+        carrito = [];
+        guardarCarrito();
+        actualizarCarrito();
+        mostrarNotificacion('Carrito vaciado');
+    }
+}
+
+// Actualizar visualización del carrito
+function actualizarCarrito() {
+    const totalCantidad = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+    contadorCarrito.textContent = totalCantidad;
+    totalItems.textContent = totalCantidad;
+    
+    if (carrito.length === 0) {
+        contenidoCarrito.innerHTML = '<p class="carrito-vacio">El carrito está vacío</p>';
+        return;
+    }
+    
+    contenidoCarrito.innerHTML = '';
+    carrito.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'item-carrito';
+        itemElement.innerHTML = `
+            <img src="${item.ruta}" alt="Sticker ${item.numero}" class="item-carrito-imagen">
+            <div class="item-carrito-info">
+                <div class="item-carrito-numero">Sticker #${item.numero}</div>
+                <div class="item-carrito-cantidad">
+                    <button class="boton-cantidad" onclick="cambiarCantidad(${item.numero}, -1)">-</button>
+                    <span class="cantidad-valor">${item.cantidad}</span>
+                    <button class="boton-cantidad" onclick="cambiarCantidad(${item.numero}, 1)">+</button>
+                </div>
+            </div>
+            <button class="boton-eliminar-item" onclick="eliminarDelCarrito(${item.numero})">🗑️</button>
+        `;
+        contenidoCarrito.appendChild(itemElement);
+    });
+}
+
+// Abrir/cerrar carrito
+function toggleCarrito() {
+    panelCarrito.classList.toggle('abierto');
+}
+
+// Enviar pedido por WhatsApp
+function enviarPedido() {
+    if (carrito.length === 0) {
+        alert('El carrito está vacío');
+        return;
+    }
+    
+    let mensaje = '¡Hola! Me gustaría hacer el siguiente pedido de stickers:\n\n';
+    
+    carrito.forEach(item => {
+        mensaje += `• Sticker #${item.numero} - Cantidad: ${item.cantidad}\n`;
+    });
+    
+    const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+    mensaje += `\nTotal de stickers: ${totalItems}`;
+    mensaje += '\n\n¡Gracias!';
+    
+    const url = `https://wa.me/${configuracion.numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
+}
+
+// Mostrar notificación
+function mostrarNotificacion(texto) {
+    const notif = document.createElement('div');
+    notif.textContent = texto;
+    notif.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #98b7ff 0%, #df98ff 100%);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+        font-weight: 600;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    document.body.appendChild(notif);
+    
+    setTimeout(() => {
+        notif.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notif.remove(), 300);
+    }, 2000);
+}
+
+// Event listeners del carrito
+botonCarrito.addEventListener('click', toggleCarrito);
+cerrarCarrito.addEventListener('click', toggleCarrito);
+botonEnviarPedido.addEventListener('click', enviarPedido);
+botonVaciarCarrito.addEventListener('click', vaciarCarrito);
+
+// Cerrar carrito al hacer click fuera
+document.addEventListener('click', (e) => {
+    if (panelCarrito.classList.contains('abierto') && 
+        !panelCarrito.contains(e.target) && 
+        !botonCarrito.contains(e.target)) {
+        toggleCarrito();
+    }
+});
+
 // Cargar cuando el DOM esté listo
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inicializar);
+    document.addEventListener('DOMContentLoaded', () => {
+        inicializar();
+        cargarCarrito();
+    });
 } else {
     inicializar();
+    cargarCarrito();
 }
