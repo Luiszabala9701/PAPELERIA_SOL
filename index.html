@@ -3,15 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Stickers</title>
+    <title>Papeleria de sol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
+    <!-- Barra de navegación -->
+    <nav class="barra-navegacion">
+        <div class="contenedor-nav">
+            <div class="logo-nav">
+                <h2>Papelería de Sol</h2>
+            </div>
+            <ul class="menu-nav">
+                <li><a href="#inicio" class="enlace-nav activo" data-seccion="inicio">Inicio</a></li>
+                <li><a href="#catalogo" class="enlace-nav" data-seccion="catalogo">Catálogo</a></li>
+                <li><a href="#plantillas" class="enlace-nav" data-seccion="plantillas">Plantillas</a></li>
+                <li><a href="#productos-fisicos" class="enlace-nav" data-seccion="productos-fisicos">Productos Físicos</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <!-- Botón flotante del carrito -->
     <button id="boton-carrito" class="boton-carrito-flotante">
-        <svg class="icono-carrito" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-        </svg>
+        <i class="fas fa-shopping-cart icono-carrito"></i>
         <span id="contador-carrito" class="contador-carrito">0</span>
     </button>
 
@@ -34,12 +48,48 @@
         </div>
     </div>
 
-    <header class="encabezado">
-        <h1 class="titulo-principal">Catálogo de Stickers PAPELERIA DE SOL</h1>
-        <p class="descripcion">Explora nuestra colección de 1000 stickers</p>
-    </header>
+    <!-- Sección de Inicio -->
+    <section id="seccion-inicio" class="seccion-pagina activa">
+        <header class="encabezado-inicio">
+            <div class="contenido-inicio">
+                <h1 class="titulo-inicio">Bienvenidos a Papelería de Sol</h1>
+                <p class="subtitulo-inicio">Tu tienda de papelería creativa</p>
+                <p class="descripcion-inicio">Descubre nuestra increíble colección de productos creativos: stickers, plantillas editables, imprimibles y más. Encuentra el diseño perfecto para ti y haz tu pedido fácilmente por WhatsApp.</p>
+                <div class="botones-cta">
+                    <a href="#catalogo" class="boton-cta" data-seccion="catalogo">Ver Catálogo Stickers</a>
+                    <a href="#plantillas" class="boton-cta boton-cta-secundario" data-seccion="plantillas">Ver Plantillas</a>
+                    <a href="#productos-fisicos" class="boton-cta boton-cta-terciario" data-seccion="productos-fisicos">Ver Productos Físicos</a>
+                </div>
+            </div>
+        </header>
+        
+        <div class="caracteristicas">
+            <div class="tarjeta-caracteristica">
+                <div class="icono-caracteristica">🎨</div>
+                <h3>Papelería Creativa</h3>
+                <p>Stickers, plantillas editables e imprimibles</p>
+            </div>
+            <div class="tarjeta-caracteristica">
+                <div class="icono-caracteristica">✨</div>
+                <h3>Diseños Únicos</h3>
+                <p>Productos exclusivos para cada ocasión</p>
+            </div>
+            <div class="tarjeta-caracteristica">
+                <div class="icono-caracteristica">💬</div>
+                <h3>Contacto Directo</h3>
+                <p>Atención personalizada por WhatsApp</p>
+            </div>
+        </div>
+    </section>
 
-    <main class="contenedor-principal">
+    <!-- Sección de Catálogo -->
+    <section id="seccion-catalogo" class="seccion-pagina">
+        <header class="encabezado">
+            <h1 class="titulo-principal">Catálogo de Stickers</h1>
+            <p class="descripcion">Explora nuestra colección con +1.000 stickers</p>
+        </header>
+
+        <main class="contenedor-principal">
         <div class="barra-busqueda">
             <input type="text" id="buscador" class="campo-busqueda" placeholder="Buscar sticker por número...">
             <button id="boton-buscar" class="boton-buscar">Buscar</button>
@@ -66,28 +116,217 @@
             </div>
             <button id="boton-siguiente" class="boton-paginacion">Siguiente</button>
         </div>
-    </main>
+        </main>
+    </section>
+
+    <!-- Sección de Plantillas -->
+    <section id="seccion-plantillas" class="seccion-pagina">
+        <header class="encabezado">
+            <h1 class="titulo-principal">Plantillas Creativas</h1>
+            <p class="descripcion">Explora nuestras plantillas editables e imprimibles para cada ocasión</p>
+        </header>
+
+        <main class="contenedor-principal">
+            <div class="grid-categorias-plantillas">
+                <!-- Tarjeta San Valentín -->
+                <div class="tarjeta-categoria-plantilla" data-seccion="san-valentin">
+                    <div class="imagen-categoria">
+                        <img src="plantillas/san-valentin/producto-final.jpeg" alt="San Valentín">
+                    </div>
+                    <div class="contenido-categoria">
+                        <h3 class="titulo-categoria">San Valentín</h3>
+                        <p class="descripcion-categoria">Conos corazón personalizables, plantillas editables y productos armados</p>
+                        <button class="boton-ver-categoria">Ver Plantillas</button>
+                    </div>
+                </div>
+
+                <!-- Espacio para futuras categorías -->
+                <!-- Puedes agregar más tarjetas aquí en el futuro -->
+            </div>
+        </main>
+    </section>
+
+    <!-- Sección de San Valentín -->
+    <section id="seccion-san-valentin" class="seccion-pagina">
+        <header class="encabezado">
+            <h1 class="titulo-principal">San Valentín - Cono Corazón</h1>
+            <p class="descripcion">Plantillas editables e imprimibles para regalar en San Valentín</p>
+        </header>
+
+        <main class="contenedor-principal">
+            <div class="seccion-plantilla">
+                
+                <!-- Galería de imágenes de plantillas -->
+                <div class="galeria-plantillas">
+                    <div class="grupo-imagenes">
+                        <h3 class="subtitulo-galeria">Editable en canva</h3>
+                        <img src="plantillas/san-valentin/editable-canva.jpeg" alt="Plantilla editable en Canva" class="imagen-plantilla-principal">
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <button class="boton-pack-completo" onclick="agregarCanvaAlCarrito()">
+                                Agregar al Carrito - $1.500
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grupo-imagenes">
+                        <h3 class="subtitulo-galeria">Diseños Imprimibles (8 modelos)</h3>
+                        <div id="galeria-plantillas-san-valentin" class="galeria-stickers">
+                            <div class="tarjeta-sticker">
+                                <div class="contenedor-imagen" onclick="ampliarPlantilla('plantillas/san-valentin/descargable-01.jpeg', 'Diseño #1')">
+                                    <img src="plantillas/san-valentin/descargable-01.jpeg" alt="Diseño 1" class="imagen-sticker" oncontextmenu="return false" ondragstart="return false">
+                                </div>
+                                <p class="numero-sticker">Diseño #1</p>
+                            </div>
+                            <div class="tarjeta-sticker">
+                                <div class="contenedor-imagen" onclick="ampliarPlantilla('plantillas/san-valentin/descargable-02.jpeg', 'Diseño #2')">
+                                    <img src="plantillas/san-valentin/descargable-02.jpeg" alt="Diseño 2" class="imagen-sticker" oncontextmenu="return false" ondragstart="return false">
+                                </div>
+                                <p class="numero-sticker">Diseño #2</p>
+                            </div>
+                            <div class="tarjeta-sticker">
+                                <div class="contenedor-imagen" onclick="ampliarPlantilla('plantillas/san-valentin/descargable-03.jpeg', 'Diseño #3')">
+                                    <img src="plantillas/san-valentin/descargable-03.jpeg" alt="Diseño 3" class="imagen-sticker" oncontextmenu="return false" ondragstart="return false">
+                                </div>
+                                <p class="numero-sticker">Diseño #3</p>
+                            </div>
+                            <div class="tarjeta-sticker">
+                                <div class="contenedor-imagen" onclick="ampliarPlantilla('plantillas/san-valentin/descargable-04.jpeg', 'Diseño #4')">
+                                    <img src="plantillas/san-valentin/descargable-04.jpeg" alt="Diseño 4" class="imagen-sticker" oncontextmenu="return false" ondragstart="return false">
+                                </div>
+                                <p class="numero-sticker">Diseño #4</p>
+                            </div>
+                            <div class="tarjeta-sticker">
+                                <div class="contenedor-imagen" onclick="ampliarPlantilla('plantillas/san-valentin/descargable-05.jpeg', 'Diseño #5')">
+                                    <img src="plantillas/san-valentin/descargable-05.jpeg" alt="Diseño 5" class="imagen-sticker" oncontextmenu="return false" ondragstart="return false">
+                                </div>
+                                <p class="numero-sticker">Diseño #5</p>
+                            </div>
+                            <div class="tarjeta-sticker">
+                                <div class="contenedor-imagen" onclick="ampliarPlantilla('plantillas/san-valentin/descargable-06.jpeg', 'Diseño #6')">
+                                    <img src="plantillas/san-valentin/descargable-06.jpeg" alt="Diseño 6" class="imagen-sticker" oncontextmenu="return false" ondragstart="return false">
+                                </div>
+                                <p class="numero-sticker">Diseño #6</p>
+                            </div>
+                            <div class="tarjeta-sticker">
+                                <div class="contenedor-imagen" onclick="ampliarPlantilla('plantillas/san-valentin/descargable-07.jpeg', 'Diseño #7')">
+                                    <img src="plantillas/san-valentin/descargable-07.jpeg" alt="Diseño 7" class="imagen-sticker" oncontextmenu="return false" ondragstart="return false">
+                                </div>
+                                <p class="numero-sticker">Diseño #7</p>
+                            </div>
+                            <div class="tarjeta-sticker">
+                                <div class="contenedor-imagen" onclick="ampliarPlantilla('plantillas/san-valentin/descargable-08.jpeg', 'Diseño #8')">
+                                    <img src="plantillas/san-valentin/descargable-08.jpeg" alt="Diseño 8" class="imagen-sticker" oncontextmenu="return false" ondragstart="return false">
+                                </div>
+                                <p class="numero-sticker">Diseño #8</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón para agregar pack completo -->
+                        <div style="text-align: center; margin-top: 1.5rem;">
+                            <button class="boton-pack-completo" onclick="agregarPackPlantillas()">
+                                Agregar Pack Completo al Carrito - $3.500
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opciones de compra -->
+                <div class="opciones-compra">
+                    <h3 class="titulo-opciones">Opciones Disponibles</h3>
+                    
+                    <div class="grid-opciones">
+                        <!-- Opción 1: Editable Canva -->
+                        <div class="tarjeta-opcion">
+                            <div class="encabezado-opcion">
+                                <h4 class="titulo-opcion">Plantilla Editable en Canva</h4>
+                            </div>
+                            <div class="precio-opcion">$1.500</div>
+                            <ul class="lista-caracteristicas">
+                                <li>Editable desde tu cuenta de Canva</li>
+                                <li>Ideal para personalizar colores, textos o nombres</li>
+                                <li>Descarga ilimitada</li>
+                                <li>No incluye producto físico</li>
+                            </ul>
+                            <button class="boton-comprar" onclick="solicitarPlantilla('San Valentín - Editable Canva', 1500)">Solicitar por WhatsApp</button>
+                        </div>
+
+                        <!-- Opción 2: PDF Imprimible -->
+                        <div class="tarjeta-opcion">
+                            <div class="encabezado-opcion">
+                                <h4 class="titulo-opcion">Plantilla Imprimible en PDF</h4>
+                            </div>
+                            <div class="precio-opcion">$3.500</div>
+                            <ul class="lista-caracteristicas">
+                                <li>Archivo listo para imprimir</li>
+                                <li>Incluye 8 diseños diferentes</li>
+                                <li>Ideal para emprendedores o uso personal</li>
+                                <li>No editable</li>
+                            </ul>
+                            <button class="boton-comprar" onclick="solicitarPlantilla('San Valentín - PDF Imprimible (8 modelos)', 3500)">Solicitar por WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <!-- Sección de Productos Físicos -->
+    <section id="seccion-productos-fisicos" class="seccion-pagina">
+        <header class="encabezado">
+            <h1 class="titulo-principal">Productos Físicos</h1>
+            <p class="descripcion">Productos armados y listos para regalar</p>
+        </header>
+
+        <main class="contenedor-principal">
+            <!-- San Valentín: Cono + Chocolates -->
+            <div class="seccion-producto-fisico">
+                <h2 class="titulo-subseccion">San Valentín - Cono Corazón</h2>
+                
+                <!-- Galería de imágenes del producto -->
+                <div class="galeria-plantillas">
+                    <div class="grupo-imagenes">
+                        <h3 class="subtitulo-galeria">Producto Final</h3>
+                        <img src="plantillas/san-valentin/producto-final.jpeg" alt="Producto final armado" class="imagen-plantilla-principal">
+                    </div>
+                </div>
+
+                <!-- Información del producto -->
+                <div class="opciones-compra">
+                    <div class="grid-opciones">
+                        <div class="tarjeta-opcion destacada">
+                            <div class="etiqueta-destacado"> Producto Físico</div>
+                            <div class="encabezado-opcion">
+                                <h4 class="titulo-opcion">Cono Armado + Chocolates</h4>
+                            </div>
+                            <div class="precio-opcion">$13.000</div>
+                            <ul class="lista-caracteristicas">
+                                <li>Cono corazón armado</li>
+                                <li>Relleno con chocolates surtidos</li>
+                                <li>Listo para regalar</li>
+                                <li>Presentación cuidada (opción celofán y moño)</li>
+                            </ul>
+                            <button class="boton-comprar" onclick="solicitarPlantilla('San Valentín - Cono armado + chocolates', 13000)">Solicitar por WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
 
     <footer class="pie-pagina">
         <div class="contenido-footer">
             <h3 class="titulo-footer">Papelería de Sol</h3>
             <div class="contacto-footer">
                 <a href="https://wa.me/541164879422" target="_blank" class="enlace-contacto">
-                    <svg class="icono-contacto" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                    </svg>
-                    WhatsApp: 11 6487-9422
+                    <i class="fab fa-whatsapp icono-contacto"></i>
+                    WhatsApp
                 </a>
                 <a href="https://www.instagram.com/papeleriadesol?igsh=MTc0ZWg1amd0NTg5bw==" target="_blank" class="enlace-contacto">
-                    <svg class="icono-contacto" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                    </svg>
+                    <i class="fab fa-instagram icono-contacto"></i>
                     @papeleriadesol
                 </a>
                 <a href="https://www.tiktok.com/@papeleriadesol?_r=1&_t=ZM-93DMEseSIUW" target="_blank" class="enlace-contacto">
-                    <svg class="icono-contacto" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
-                    </svg>
+                    <i class="fab fa-tiktok icono-contacto"></i>
                     @papeleriadesol
                 </a>
             </div>

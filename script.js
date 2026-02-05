@@ -14,7 +14,11 @@ let paginaActual = 1;
 let stickersActuales = [];
 let todosLosStickers = [];
 
-// Elementos del DOM
+// Elementos del DOM - Navegación
+const enlacesNav = document.querySelectorAll('.enlace-nav');
+const secciones = document.querySelectorAll('.seccion-pagina');
+
+// Elementos del DOM - Catálogo
 const galeriaStickers = document.getElementById('galeria-stickers');
 const textoCargando = document.getElementById('texto-cargando');
 const botonAnterior = document.getElementById('boton-anterior');
@@ -35,6 +39,247 @@ const contenidoCarrito = document.getElementById('contenido-carrito');
 const totalItems = document.getElementById('total-items');
 const botonEnviarPedido = document.getElementById('boton-enviar-pedido');
 const botonVaciarCarrito = document.getElementById('boton-vaciar-carrito');
+
+// ===== NAVEGACIÓN ENTRE SECCIONES =====
+
+// Función para cambiar de sección
+function cambiarSeccion(nombreSeccion) {
+    // Remover clase activa de todos los enlaces y secciones
+    enlacesNav.forEach(enlace => enlace.classList.remove('activo'));
+    secciones.forEach(seccion => seccion.classList.remove('activa'));
+    
+    // Agregar clase activa a la sección y enlace correspondiente
+    const seccionActiva = document.getElementById(`seccion-${nombreSeccion}`);
+    const enlaceActivo = document.querySelector(`[data-seccion="${nombreSeccion}"]`);
+    
+    if (seccionActiva) {
+        seccionActiva.classList.add('activa');
+    }
+    
+    if (enlaceActivo) {
+        enlaceActivo.classList.add('activo');
+    }
+    
+    // Si cambiamos al catálogo y no se ha cargado, cargarlo
+    if (nombreSeccion === 'catalogo' && todosLosStickers.length === 0) {
+        inicializarCatalogo();
+    }
+    
+    // Si cambiamos a plantillas, aplicar protección
+    if (nombreSeccion === 'plantillas') {
+        setTimeout(() => {
+            aplicarProteccionPlantillas();
+        }, 100);
+    }
+}
+
+// Event listeners para los enlaces de navegación
+enlacesNav.forEach(enlace => {
+    enlace.addEventListener('click', (e) => {
+        e.preventDefault();
+        const seccion = enlace.getAttribute('data-seccion');
+        cambiarSeccion(seccion);
+    });
+});
+
+// Event listener para el botón "Ver Catálogo" y otros elementos con data-seccion
+document.addEventListener('click', (e) => {
+    const elemento = e.target.closest('[data-seccion]');
+    if (elemento && !elemento.classList.contains('enlace-nav')) {
+        e.preventDefault();
+        const seccion = elemento.getAttribute('data-seccion');
+        cambiarSeccion(seccion);
+    }
+});
+
+// Manejar enlaces hash en la URL
+window.addEventListener('load', () => {
+    const hash = window.location.hash.substring(1); // Quitar el #
+    if (hash && (hash === 'inicio' || hash === 'catalogo' || hash === 'plantillas' || hash === 'san-valentin' || hash === 'productos-fisicos')) {
+        cambiarSeccion(hash);
+    }
+});
+
+// ===== FUNCIONES DE PLANTILLAS =====
+
+// Función para ampliar una plantilla (similar a ampliar sticker)
+function ampliarPlantilla(rutaImagen, titulo) {
+    const existe = document.getElementById('modal-sticker');
+    if (existe) {
+        existe.remove();
+    }
+    
+    const modal = document.createElement('div');
+    modal.id = 'modal-sticker';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        cursor: pointer;
+    `;
+    
+    const contenedor = document.createElement('div');
+    contenedor.style.cssText = `
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        max-width: 90%;
+        max-height: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+    `;
+    
+    // Botón de cerrar
+    const botonCerrar = document.createElement('button');
+    botonCerrar.innerHTML = '&times;';
+    botonCerrar.style.cssText = `
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: #df98ff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 2rem;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        transition: all 0.3s ease;
+    `;
+    botonCerrar.onmouseover = () => {
+        botonCerrar.style.background = '#c97aff';
+        botonCerrar.style.transform = 'scale(1.1)';
+    };
+    botonCerrar.onmouseout = () => {
+        botonCerrar.style.background = '#df98ff';
+        botonCerrar.style.transform = 'scale(1)';
+    };
+    botonCerrar.onclick = (e) => {
+        e.stopPropagation();
+        modal.remove();
+    };
+    
+    contenedor.appendChild(botonCerrar);
+    
+    const contenedorImagen = document.createElement('div');
+    contenedorImagen.style.cssText = `
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+    
+    const posicionesMarcas = [
+        { top: '-15%', left: '80%' },
+        { top: '-5%', left: '90%' },
+        { top: '5%', left: '100%' }
+    ];
+    
+    posicionesMarcas.forEach((posicion) => {
+        const marcaAgua = document.createElement('div');
+        marcaAgua.textContent = 'Papelería de Sol • Papelería de Sol • Papelería de Sol';
+        marcaAgua.style.cssText = `
+            position: absolute;
+            top: ${posicion.top};
+            left: ${posicion.left};
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: rgba(152, 183, 255, 0.2);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 2;
+            user-select: none;
+            width: 200%;
+        `;
+        contenedorImagen.appendChild(marcaAgua);
+    });
+    
+    const imagen = document.createElement('img');
+    imagen.src = rutaImagen;
+    imagen.alt = titulo;
+    imagen.style.cssText = `
+        max-width: 100%;
+        max-height: 70vh;
+        border-radius: 10px;
+        object-fit: contain;
+        user-select: none;
+        -webkit-user-drag: none;
+        -webkit-touch-callout: none;
+        pointer-events: none;
+    `;
+    
+    contenedorImagen.appendChild(imagen);
+    
+    const numero = document.createElement('h3');
+    numero.textContent = titulo;
+    numero.style.cssText = `
+        color: #98b7ff;
+        font-size: 1.5rem;
+        margin: 0;
+    `;
+    
+    contenedor.appendChild(numero);
+    contenedor.appendChild(contenedorImagen);
+    modal.appendChild(contenedor);
+    
+    // Protección contra clic derecho en el modal
+    modal.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Protección contra arrastrar
+    modal.addEventListener('dragstart', (e) => {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Protección contra selección
+    modal.addEventListener('selectstart', (e) => {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // Solo el botón X puede cerrar el modal
+    contenedor.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    document.body.appendChild(modal);
+}
+
+// Función para solicitar plantilla por WhatsApp
+function solicitarPlantilla(nombreProducto, precio) {
+    let mensaje = `Hola! Me interesa la plantilla:\n\n`;
+    mensaje += `${nombreProducto}\n`;
+    if (precio > 0) {
+        mensaje += `Precio: $${precio.toLocaleString('es-AR')}\n`;
+    }
+    mensaje += `\nPodrias darme mas informacion?\n\nGracias!`;
+    
+    const url = `https://wa.me/${configuracion.numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
+}
+
+// ===== FUNCIONES DEL CATÁLOGO =====
 
 // Función para generar el array de todos los stickers
 function generarListaStickers() {
@@ -132,6 +377,43 @@ function ampliarSticker(sticker) {
         position: relative;
     `;
     
+    // Botón de cerrar
+    const botonCerrar = document.createElement('button');
+    botonCerrar.innerHTML = '&times;';
+    botonCerrar.style.cssText = `
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: #df98ff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 2rem;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        transition: all 0.3s ease;
+    `;
+    botonCerrar.onmouseover = () => {
+        botonCerrar.style.background = '#c97aff';
+        botonCerrar.style.transform = 'scale(1.1)';
+    };
+    botonCerrar.onmouseout = () => {
+        botonCerrar.style.background = '#df98ff';
+        botonCerrar.style.transform = 'scale(1)';
+    };
+    botonCerrar.onclick = (e) => {
+        e.stopPropagation();
+        modal.remove();
+    };
+    
+    contenedor.appendChild(botonCerrar);
+    
     // Contenedor de imagen con marca de agua
     const contenedorImagen = document.createElement('div');
     contenedorImagen.style.cssText = `
@@ -141,11 +423,11 @@ function ampliarSticker(sticker) {
         justify-content: center;
     `;
     
-    // Múltiples marcas de agua
+    // Múltiples marcas de agua centradas y más arriba
     const posicionesMarcas = [
-        { top: '5%', left: '70%' },
-        { top: '20%', left: '75%' },
-        { top: '35%', left: '80%' }
+        { top: '0%', left: '70%' },
+        { top: '15%', left: '80%' },
+        { top: '30%', left: '90%' }
     ];
     
     posicionesMarcas.forEach((posicion, index) => {
@@ -214,8 +496,9 @@ function ampliarSticker(sticker) {
         }
     });
     
-    modal.addEventListener('click', () => {
-        modal.remove();
+    // Solo el botón X puede cerrar el modal
+    contenedor.addEventListener('click', (e) => {
+        e.stopPropagation();
     });
     
     document.body.appendChild(modal);
@@ -386,12 +669,48 @@ function aplicarProteccionImagenes() {
     });
 }
 
+// Protección de imágenes de plantillas
+function aplicarProteccionPlantillas() {
+    const galeriaPlantillas = document.getElementById('galeria-plantillas-san-valentin');
+    console.log('Buscando galería de plantillas...', galeriaPlantillas);
+    
+    if (galeriaPlantillas) {
+        console.log('Galería encontrada, aplicando protección...');
+        
+        // Deshabilitar clic derecho
+        galeriaPlantillas.addEventListener('contextmenu', (e) => {
+            console.log('Clic derecho bloqueado en plantilla');
+            e.preventDefault();
+            return false;
+        });
+        
+        // Deshabilitar arrastrar imágenes
+        galeriaPlantillas.addEventListener('dragstart', (e) => {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Deshabilitar selección de imágenes
+        galeriaPlantillas.addEventListener('selectstart', (e) => {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+                return false;
+            }
+        });
+    } else {
+        console.log('Galería NO encontrada');
+    }
+}
+
 // Inicialización
 function inicializar() {
     console.log('Inicializando catálogo de stickers...');
     generarListaStickers();
     renderizarStickers();
     aplicarProteccionImagenes();
+    aplicarProteccionPlantillas();
     console.log(`Catálogo cargado con ${configuracion.totalStickers} stickers`);
 }
 
@@ -413,12 +732,12 @@ function guardarCarrito() {
 
 // Agregar sticker al carrito
 function agregarAlCarrito(sticker) {
-    const existe = carrito.find(item => item.numero === sticker.numero);
+    const existe = carrito.find(item => item.tipo === 'sticker' && item.numero === sticker.numero);
     
     if (existe) {
         existe.cantidad++;
     } else {
-        carrito.push({ ...sticker, cantidad: 1 });
+        carrito.push({ ...sticker, tipo: 'sticker', cantidad: 1 });
     }
     
     guardarCarrito();
@@ -426,20 +745,108 @@ function agregarAlCarrito(sticker) {
     mostrarNotificacion(`Sticker #${sticker.numero} agregado al carrito`);
 }
 
-// Eliminar sticker del carrito
-function eliminarDelCarrito(numero) {
-    carrito = carrito.filter(item => item.numero !== numero);
+// Agregar plantilla al carrito
+function agregarPlantillaAlCarrito(nombre, categoria, numero, ruta) {
+    const id = `plantilla-${categoria}-${numero}`;
+    const existe = carrito.find(item => item.id === id);
+    
+    if (existe) {
+        existe.cantidad++;
+    } else {
+        carrito.push({
+            id: id,
+            tipo: 'plantilla',
+            nombre: nombre,
+            categoria: categoria,
+            numero: numero,
+            ruta: ruta,
+            precio: 3500,
+            cantidad: 1
+        });
+    }
+    
+    guardarCarrito();
+    actualizarCarrito();
+    mostrarNotificacion(`${nombre} agregado al carrito`);
+}
+
+// Agregar pack completo de plantillas San Valentín
+function agregarPackPlantillas() {
+    const id = 'pack-san-valentin';
+    const existe = carrito.find(item => item.id === id);
+    
+    if (existe) {
+        existe.cantidad++;
+    } else {
+        carrito.push({
+            id: id,
+            tipo: 'plantilla',
+            nombre: 'Pack San Valentín (8 diseños)',
+            categoria: 'San Valentín',
+            ruta: 'plantillas/san-valentin/descargable-01.jpeg', // Imagen representativa
+            precio: 3500,
+            cantidad: 1,
+            esPack: true
+        });
+    }
+    
+    guardarCarrito();
+    actualizarCarrito();
+    mostrarNotificacion('Pack San Valentín agregado al carrito');
+}
+
+// Agregar plantilla editable Canva
+function agregarCanvaAlCarrito() {
+    const id = 'canva-san-valentin';
+    const existe = carrito.find(item => item.id === id);
+    
+    if (existe) {
+        existe.cantidad++;
+    } else {
+        carrito.push({
+            id: id,
+            tipo: 'plantilla',
+            nombre: 'Plantilla Editable Canva - San Valentín',
+            categoria: 'San Valentín',
+            ruta: 'plantillas/san-valentin/descargable-01.jpeg', // Imagen representativa
+            precio: 1500,
+            cantidad: 1,
+            esCanva: true
+        });
+    }
+    
+    guardarCarrito();
+    actualizarCarrito();
+    mostrarNotificacion('Plantilla Canva agregada al carrito');
+}
+
+// Eliminar item del carrito
+function eliminarDelCarrito(id) {
+    carrito = carrito.filter(item => {
+        if (item.tipo === 'sticker') {
+            return item.numero !== id;
+        } else {
+            return item.id !== id;
+        }
+    });
     guardarCarrito();
     actualizarCarrito();
 }
 
 // Cambiar cantidad de un item
-function cambiarCantidad(numero, cambio) {
-    const item = carrito.find(item => item.numero === numero);
+function cambiarCantidad(id, cambio, tipo) {
+    const item = carrito.find(item => {
+        if (tipo === 'sticker') {
+            return item.tipo === 'sticker' && item.numero === id;
+        } else {
+            return item.id === id;
+        }
+    });
+    
     if (item) {
         item.cantidad += cambio;
         if (item.cantidad <= 0) {
-            eliminarDelCarrito(numero);
+            eliminarDelCarrito(id);
         } else {
             guardarCarrito();
             actualizarCarrito();
@@ -477,15 +884,15 @@ function actualizarCarrito() {
         
         const img = document.createElement('img');
         img.src = item.ruta;
-        img.alt = `Sticker ${item.numero}`;
+        img.alt = item.tipo === 'sticker' ? `Sticker ${item.numero}` : item.nombre;
         img.className = 'item-carrito-imagen';
         
         const info = document.createElement('div');
         info.className = 'item-carrito-info';
         
-        const numero = document.createElement('div');
-        numero.className = 'item-carrito-numero';
-        numero.textContent = `Sticker #${item.numero}`;
+        const nombre = document.createElement('div');
+        nombre.className = 'item-carrito-numero';
+        nombre.textContent = item.tipo === 'sticker' ? `Sticker #${item.numero}` : item.nombre;
         
         const cantidadContainer = document.createElement('div');
         cantidadContainer.className = 'item-carrito-cantidad';
@@ -495,7 +902,8 @@ function actualizarCarrito() {
         botonMenos.textContent = '-';
         botonMenos.addEventListener('click', (e) => {
             e.stopPropagation();
-            cambiarCantidad(item.numero, -1);
+            const id = item.tipo === 'sticker' ? item.numero : item.id;
+            cambiarCantidad(id, -1, item.tipo);
         });
         
         const cantidadValor = document.createElement('span');
@@ -507,22 +915,24 @@ function actualizarCarrito() {
         botonMas.textContent = '+';
         botonMas.addEventListener('click', (e) => {
             e.stopPropagation();
-            cambiarCantidad(item.numero, 1);
+            const id = item.tipo === 'sticker' ? item.numero : item.id;
+            cambiarCantidad(id, 1, item.tipo);
         });
         
         const botonEliminar = document.createElement('button');
         botonEliminar.className = 'boton-eliminar-item';
-        botonEliminar.textContent = '🗑️';
+        botonEliminar.textContent = '×';
         botonEliminar.addEventListener('click', (e) => {
             e.stopPropagation();
-            eliminarDelCarrito(item.numero);
+            const id = item.tipo === 'sticker' ? item.numero : item.id;
+            eliminarDelCarrito(id);
         });
         
         cantidadContainer.appendChild(botonMenos);
         cantidadContainer.appendChild(cantidadValor);
         cantidadContainer.appendChild(botonMas);
         
-        info.appendChild(numero);
+        info.appendChild(nombre);
         info.appendChild(cantidadContainer);
         
         itemElement.appendChild(img);
@@ -545,15 +955,31 @@ function enviarPedido() {
         return;
     }
     
-    let mensaje = '¡Hola! Me gustaría hacer el siguiente pedido de stickers:\n\n';
+    let mensaje = 'Hola! Me gustaria hacer el siguiente pedido:\n\n';
     
-    carrito.forEach(item => {
-        mensaje += `• Sticker #${item.numero} - Cantidad: ${item.cantidad}\n`;
-    });
+    const stickers = carrito.filter(item => item.tipo === 'sticker');
+    const plantillas = carrito.filter(item => item.tipo === 'plantilla');
+    
+    if (stickers.length > 0) {
+        mensaje += '=== STICKERS ===\n';
+        stickers.forEach(item => {
+            mensaje += `Sticker #${item.numero} - Cantidad: ${item.cantidad}\n`;
+        });
+        mensaje += '\n';
+    }
+    
+    if (plantillas.length > 0) {
+        mensaje += '=== PLANTILLAS PDF ===\n';
+        plantillas.forEach(item => {
+            mensaje += `${item.nombre} - Cantidad: ${item.cantidad}\n`;
+            mensaje += `Precio unitario: $${item.precio.toLocaleString('es-AR')}\n`;
+        });
+        mensaje += '\n';
+    }
     
     const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-    mensaje += `\nTotal de stickers: ${totalItems}`;
-    mensaje += '\n\n¡Gracias!';
+    mensaje += `Total de items: ${totalItems}`;
+    mensaje += '\n\nGracias!';
     
     const url = `https://wa.me/${configuracion.numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
@@ -603,10 +1029,15 @@ document.addEventListener('click', (e) => {
 // Cargar cuando el DOM esté listo
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        inicializar();
         cargarCarrito();
+        // No inicializar catálogo automáticamente, solo cuando se acceda a esa sección
     });
 } else {
-    inicializar();
     cargarCarrito();
+    // No inicializar catálogo automáticamente, solo cuando se acceda a esa sección
+}
+
+// Función para inicializar el catálogo (se llama cuando se accede a la sección)
+function inicializarCatalogo() {
+    inicializar();
 }
